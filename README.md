@@ -1,2 +1,5 @@
 # Caesar
-Caesar是一个消息队列，用Go语言实现。
+Caesar is a simple MessageQueue, developed by Golang.
+  
+
+

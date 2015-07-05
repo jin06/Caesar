@@ -1,5 +1,5 @@
-package src
-	
+package log
+
 import (
 	
 )

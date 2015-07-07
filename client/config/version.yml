@@ -1,0 +1,6 @@
+version: 1.0
+update: 
+  - The first version for CaesarClient.
+  - Programmed by jinlong.
+  - Basic struct.
+instruction: Caesar is a high performance message queue. Thank you for using it. If you hanve any question, please contact me by email jinlong4696@163.com

@@ -1,3 +1,6 @@
+
+/*Package message provides message struct.
+*/
 package message
 	
 import (

@@ -1,0 +1,8 @@
+database:
+  host: 127.0.0.1
+  user: root
+  port: 8080
+serveraddress: 127.0.0.1:1212
+localaddress: 127.0.0.1:2213
+
+

@@ -1,24 +1,21 @@
 package main 
 
 import (
-	//"net/rpc"
+	"flag"
 	"net"
 	"fmt"
+	"net/rpc"
+	
 	"github.com/jin06/Caesar/msgqueue"
-	//"encoding/gob" 
-//	/"message"
-	//"bytes"
-	//"encoding/json"
+	"github.com/jin06/Caesar/command" 
+	
 )
-
-const (
-	listenAddr string = "127.0.0.1:1212" 
-	msgAddr string = "127.0.0.1:1213"
-)	
 
 var (
+	listenAddr string = "127.0.0.1:1212" 
+	msgAddr string = "127.0.0.1:1213"
 	mqAgent msgqueue.MqAgent = msgqueue.MqAgent{}
-)
+)	
 
 func handleErr(err error) {
 	if err != nil {
@@ -26,7 +23,17 @@ func handleErr(err error) {
 	}	
 }
 
+func flagResolve() {
+	addrFlag := flag.String("Address", "", "listen Addr and port")
+	if *addrFlag != "" {
+		listenAddr = *addrFlag	
+	} 
+}
+
 func main() {
+	
+	flagResolve()
+	
 	//resolve TCPAddress 
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", listenAddr)
 	handleErr(err)
@@ -37,17 +44,19 @@ func main() {
 	
 	//Create TCP connection
 	
-	tcpConn , err := ln.AcceptTCP()
+//	tcpConn , err := ln.AcceptTCP()	
+//	handleErr(err)  
 	
-	handleErr(err)   
+	rpcServer := rpc.NewServer()
+	users := new(command.Users)
+	rpcServer.Register(users)
+	rpcServer.Accept(ln)
 	
-	 
+	//command.Service(tcpConn) 
 //	var	value interface{} = message.AD{}
 //	b := make([]byte,1024)
 //	msgqueue.RecAndRes(tcpConn, b, &value)
 //	fmt.Printf("%+v", value)	
-	
-		 mqAgent.Start(tcpConn)	
-	
+	// mqAgent.Start(tcpConn)	
 }
 

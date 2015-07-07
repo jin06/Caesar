@@ -5,7 +5,7 @@ import (
 	//"message" 
 )
 
-const (
+const ( 
 	ONLINE = 1	
 )
 

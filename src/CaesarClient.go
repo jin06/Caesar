@@ -27,7 +27,7 @@ func handleError(err error) {
 }
 
 func startService() {
-
+    
 	//Create a new rpc client for handle the request to server and respons from server.
 	var err error
 	rpcClient, err = rpc.Dial("tcp4", serverAddr)
@@ -80,7 +80,7 @@ func send(v interface{}, conn *net.TCPConn) error {
 func main() {
 	
 	client.Readconfig(&localAddr, &serverAddr)
-	//flag resolve
+	//flag resolve  
 	cflag.FlagResolve(&localAddr, &serverAddr, &username, &password)
 	//fmt.Println(localAddr,serverAddr,username,password)
 

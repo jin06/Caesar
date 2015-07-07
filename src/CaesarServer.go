@@ -33,7 +33,6 @@ func flagResolve() {
 func main() {
 	
 	flagResolve()
-	
 	//resolve TCPAddress 
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", listenAddr)
 	handleErr(err)
@@ -45,7 +44,7 @@ func main() {
 	//Create TCP connection
 	
 //	tcpConn , err := ln.AcceptTCP()	
-//	handleErr(err)  
+//	handleErr(err)   
 	
 	rpcServer := rpc.NewServer()
 	users := new(command.Users)

@@ -1,4 +1,4 @@
-version: 1.0
+version: "1.0"
 update: 
   - The first version for CaesarClient.
   - Programmed by jinlong.

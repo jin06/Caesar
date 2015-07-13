@@ -1,7 +1,7 @@
 package message
 
 import (
-
+	
 )
 
 type AD struct {

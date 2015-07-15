@@ -5,6 +5,9 @@ import (
 	"net"
 	"github.com/jin06/Caesar/log"
 	"github.com/jin06/Caesar/object"
+	"github.com/jin06/Caesar/db"
+	//"github.com/jin06/Caesar/db"
+	//"github.com/jin06/Caesar/msgqueue"
 )
 
 //default rpc server, handle ruquest form client
@@ -16,12 +19,16 @@ var (
 var (
 	 test = new(object.Test)
 	 onlineUsers = object.NewUsers()  
+	 mqAgentStat = new(MqAgentStat)
+	 mqTable = new(db.Mq_Table) 
 )
 
 //publice DefaultServer's methods
 func Register() {
 	DefaultServer.Register(test)
 	DefaultServer.Register(onlineUsers)  
+	DefaultServer.Register(mqAgentStat)  
+	DefaultServer.Register(mqTable)
 }
 
 //init the defaultServer, publice receiver's method and accept the listener from client.

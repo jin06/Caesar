@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/rpc"
 	"os"
+	//"os/exec"
 	"math/rand"
 	"time"
 	//"strings"
@@ -17,8 +18,11 @@ import (
 	"github.com/tsuru/config"
 )
 
-var rpcClient *rpc.Client
-var r = bufio.NewReader(os.Stdin)
+var (
+	rpcClient *rpc.Client
+	r = bufio.NewReader(os.Stdin)
+	StatusLine = 0
+)
 var Me = &object.User{
 	Id:0,  
 	Role:"regular", 
@@ -40,11 +44,14 @@ func StartService(localAddr, serverAddr, username, password string) {
 	fmt.Println("Start success! Client startup at", localAddr, ".", "Connected server address:", serverAddr)
 	//defer logOff()
 	//Scan the input command.
+	
 	for {
 		fmt.Print(">")
 		line, _, err := r.ReadLine()
 		handleError(err)
-		disCmd(string(line))
+		if !CmdPara(string(line)){
+			disCmd(string(line))
+		}
 	}
 }
 
@@ -52,7 +59,7 @@ func StartService(localAddr, serverAddr, username, password string) {
 func disCmd(cmd string) bool {
 	switch cmd {
 	case "exit":
-		fmt.Println("Caesar exit!Bye!")
+		fmt.Println("Caesar exit! Bye!")
 		logOff()
 		os.Exit(0)
 		return true
@@ -88,9 +95,11 @@ func disCmd(cmd string) bool {
 			Me.Name = username
 			Me.Password = password
 			
-			fmt.Println(Me)
+			//fmt.Println(Me)
 			rpcClient.Call("Users.Login", Me, &res)
-			fmt.Println(Me.Key)
+			if res == "Login success." {StatusLine = 1}
+			//fmt.Println(Me.Id)
+			//fmt.Println(Me.Key)
 			log.Log("info", res, nil)
 		}
 		return true
@@ -100,16 +109,15 @@ func disCmd(cmd string) bool {
 		if simRes.LogInfo != "" {
 			fmt.Print(simRes.LogInfo)
 		}else {
-			fmt.Print(simRes.Res)
+			fmt.Printf(simRes.Res)
 		}
-		
 		return true	
 	case "newqueue":
 		fmt.Println("Please input name:")
 		return true
 
 	default:
-		fmt.Println("Command not found!")
+		fmt.Printf("Command \"%s\" not found!\n", cmd)
 		return false
 	}
 }
@@ -142,7 +150,7 @@ func genKey() int {
 
 //when you exit, send a command to server that you are exit
 func logOff() {
-	fmt.Println("run here")
+	//fmt.Println("run here")
 	var res string
 	rpcClient.Call("Users.LogOff", Me, &res)
 }

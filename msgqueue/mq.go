@@ -18,6 +18,17 @@ type MsQueue struct {
 	Persistence bool       //if true, it means that the message save in database
 }
 
+func NewMsgQue(id int,name string, mqType int, owner string, per bool) *MsQueue{
+	mq := MsQueue{}
+	mq.List = list.New()
+	mq.MQid = id
+	mq.MQname = name
+	mq.MQType = mqType
+	mq.Owner = owner
+	mq.Persistence = per
+	return &mq
+}
+
 func NewMQ() *MsQueue {
 	mq := MsQueue{}
 	mq.List = list.New()

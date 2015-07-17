@@ -23,16 +23,23 @@ func (lead *Mq_Table) CreateMQ(mqtable *Mq_Table, res *string) error {
 	return nil
 }
 
-func (lead *Mq_Table) DeleteMq(mqId int, res *string) error {
+func (lead *Mq_Table) DeleteMq(arr []int, res *string) error {
 	//fmt.Println("here")
 	//log.Log("info", mqtable.Name, nil)
-	err := DeleteMqById(mqId)
-	if err != nil {
-		*res = "Delete failed!"
-	}else {
-		*res = strconv.Itoa(mqId) + " delete success."
-		log.Log("info", strconv.Itoa(mqId) + " delete.", nil)
+//	failed := ""
+	success := ""
+	for _, v := range arr {
+		err := DeleteMqById(v)
+		if err != nil {
+			*res = "Delete failed."
+			return err
+		}else {
+			success += strconv.Itoa(v) + " "
+			log.Log("info", strconv.Itoa(v) + " delete.", nil)
+		}
 	}
+	
+	*res = success + "delete success."
 	return nil
 }
   

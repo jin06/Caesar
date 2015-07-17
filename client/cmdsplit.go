@@ -98,6 +98,30 @@ func CmdPara(cmd string) bool{
 		return true
 	}
 	
+		if strings.HasPrefix(cmd, "delete mq") {
+		arr := []int{}
+		cmd := strings.TrimPrefix(cmd, "delete mq")
+		sArr := strings.Fields(cmd)
+		res := ""
+		if len(sArr) >0 {
+			for _, v := range sArr {
+				i, err := strconv.Atoi(v)  
+				arr = append(arr, i)
+				if err != nil {
+					fmt.Println(err)
+					return true
+				}
+				//fmt.Println(arr[k])
+			}
+			err := rpcClient.Call("Mq_Table.DeleteMq", arr, &res)
+			handleError(err)
+			fmt.Println(res)
+		}else {
+			fmt.Println("No parameters.----For example delete mq 1234")
+		}
+		return true
+	}
+	
 	return false
 }
 

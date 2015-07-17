@@ -81,12 +81,13 @@ func (users *Users) Login (user *User, res *string)  error {
 }
 
 func (users *Users) MyMQ (user *User, simres *SimResult) error {
+	simres.LogInfo = ""
+	//simres.Res = "You don't have queue."
 	if users.isLogined(user) {
 		if user.Key != users.UM[user.Name].Key{
 			simres.LogInfo = "User has already login!!! You are not login."
 			simres.Res = ""
 		}else {
-			simres.LogInfo = ""
 			mqArr, err := db.GetAllMqFromDB(user.Name)
 			if err != nil {
 				return err

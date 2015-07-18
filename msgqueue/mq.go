@@ -2,6 +2,8 @@ package msgqueue
 
 import (
 	"container/list"
+	"sync"
+	//"errors"
 
 	"github.com/jin06/Caesar/message"
 	//"message"
@@ -16,6 +18,7 @@ type MsQueue struct {
 	MQType      int        //message queue type
 	Owner       string     //message queue owner, who own this message queue
 	Persistence bool       //if true, it means that the message save in database
+	sync.RWMutex
 }
 
 func NewMsgQue(id int,name string, mqType int, owner string, per bool) *MsQueue{
@@ -52,4 +55,6 @@ func (mq *MsQueue) PopMsg() *message.Message{
 	}
 	msg := mq.List.Remove(e).(message.Message)
 	return &msg
-}
+}               
+
+

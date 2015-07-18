@@ -6,18 +6,21 @@ import (
 
 	"github.com/jin06/Caesar/log"
 	. "github.com/jin06/Caesar/msgqueue"
+	"github.com/tsuru/config"
 	//"fmt"
-	"errors"
+	"errors" 
 )
 
 var (
-	user   string = "beijing"
-	pwd    string = "beijing"
-	dbname string = "caesar"
+	user   string //= "beijing"
+	pwd    string  // = "beijing"
+	dbname string //= "caesar"
+	//User string = "beijing"
+	dbaddress string 
 )
 
 var (
-	DB = mysql.New("tcp", "", "127.0.0.1:3306", user, pwd, dbname)
+	DB mysql.Conn//= mysql.New("tcp", "",dbaddress , user, pwd, dbname)
 )
 
 func InitDBService() {
@@ -25,6 +28,26 @@ func InitDBService() {
 	if err != nil {
 		log.Log("err", err.Error(), nil)
 	}
+}
+
+func init() {
+	err := config.ReadConfigFile("../config/db.yaml")
+	if err != nil {
+		//fmt.Print(err)
+		log.Log("err", err.Error(), nil)
+	}else {
+		log.Log("info", "DB config read!", nil)
+	}   
+	user, err = config.GetString("username")
+	handleErr(err)
+	pwd, err = config.GetString("password")
+	handleErr(err)
+	dbname, err = config.GetString("dbname")
+	handleErr(err)
+	dbaddress, err = config.GetString("address")
+	handleErr(err)
+	//log.Log("info", "", log.Fields{"username":user,"password":pwd,"dbname":dbname,"address":dbaddress})
+	DB = mysql.New("tcp", "", dbaddress , user, pwd, dbname)
 }
 
 func handleErr(err error) {

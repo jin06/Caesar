@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"runtime"
 	//"github.com/jin06/Caesar/command"
 	"github.com/jin06/Caesar/msgqueue"
 	"github.com/jin06/Caesar/sflag"
@@ -31,7 +32,7 @@ func loadConf() {
 		//fmt.Print(err)
 		log.Log("err", err.Error(), nil)
 	}else {
-	log.Log("info", "Completely read!", nil)
+		log.Log("info", "Completely read!", nil)
 	}
 	   
 	listenAddr, err = config.GetString("rpcAddress")
@@ -41,6 +42,9 @@ func loadConf() {
 }
 
 func main() {
+	//set runtime
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	
 	log.Log("","Welcom to use Caesar. Caesar is a high performance message queue.", nil)
 	loadConf() 
 	sflag.FlagResolve(&listenAddr)  
@@ -52,6 +56,11 @@ func main() {
 
 	//Create listener
 	ln, err := net.ListenTCP("tcp4", tcpAddr)
+	
+	//start message server service
+	go control.MsgServerStart()
+	
+	//start control server service
 	control.Init(ln)
 //	rpcServer := rpc.NewServer() 
 //	users := new(command.Users)

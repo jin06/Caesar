@@ -3,10 +3,15 @@ package msgqueue
 import (
 	//"net"
 	"fmt"
+	"strconv"
+	//"net/http"
 	//"encoding/json"
 	"github.com/jin06/Caesar/message"
+	"github.com/jin06/Caesar/log"
+	"github.com/ant0ine/go-json-rest/rest"
+	
 	//"github.com/jin06/Caesar/db"
-	//"net"
+	
 )
 
 //var MqMap map[string]MsQueue 
@@ -65,6 +70,56 @@ func DeleteMQbyId(mqid int) {
 func (mqagent *MqAgent)Test(cmd *[]string, res *string) error{
 	*res = "mqagent rpc method test"
 	return nil
+}
+
+func (mqagent MqAgent)GetMsg(w rest.ResponseWriter, r *rest.Request) {
+	mqid, err := strconv.Atoi(r.PathParam("mqid"))
+	if err != nil {
+		log.Log("info", err.Error(), nil)
+	}
+	mq, ok := mqagent[mqid]
+	if ok {
+		mq.Lock()
+		msg := mq.PopMsg()
+		mq.Unlock()
+		w.WriteJson(msg.Value)
+	}else { //msgqueue nonexist
+		
+	}
+}
+
+func (mqagent MqAgent)PostMsg(w rest.ResponseWriter, r *rest.Request) {
+	msg := message.NewMsg()
+	mqid, err := strconv.Atoi(r.PathParam("mqid"))
+	if err != nil {
+		log.Log("info", err.Error(), nil)
+	}
+	mq, ok := mqagent[mqid]
+	if ok {
+		msg.MQid = mqid
+		r.DecodeJsonPayload(msg.Value)
+		mq.Lock()
+		mq.AddMsg(*msg)
+		mq.Unlock()
+		w.WriteJson(msg.Value)
+	}else {
+		
+	}
+}
+
+//test message queue , if mq is runing,reuturn true
+func (mqagent MqAgent)TestMq(w rest.ResponseWriter, r *rest.Request){
+	mqid, err := strconv.Atoi(r.PathParam("mqid"))
+	if err != nil {
+		log.Log("err", err.Error(), nil)
+	}
+	_, ok := mqagent[mqid]
+	if ok {
+		w.WriteJson(map[string]string{"Result": ""})
+	}else {
+		w.WriteJson(map[string]string{"Result": "not running"})
+	}
+	
 }
 
 

@@ -77,7 +77,7 @@ Caesar是用go语言开发的消息队列。
 | version    |    |  服务端版本说明   |      go run CaesarServer.go -version            |
 | runtime     | [int] |  服务器运行级别  |        未实现               |
 
-###6、CaesarServer启动参数说明
+###6、CaesarClient启动参数说明
 
 | 命令     | 参数 | 说明   |      使用例子              |
 | :------- | ----: | :---: |:---:                    |

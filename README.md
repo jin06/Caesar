@@ -120,8 +120,6 @@ Caesar是用go语言开发的消息队列。
   
   > - 创建用户test
   
-  > - 删除用户test
-  
   > - 使用users命令查看所有用户
   
 ![Alt text](/image/user.png)
@@ -133,10 +131,6 @@ Caesar是用go语言开发的消息队列。
   > - 创建队列mq
   
   > - 启动队列mq
-  
-  > - 停止队列mq
-  
-  > - 删除队列mq
   
   > - 使用myqueue命令查看所有用户
   

@@ -42,6 +42,36 @@ func (lead *Mq_Table) DeleteMq(arr []int, res *string) error {
 	*res = success + "delete success."
 	return nil
 }
+
+func (lead *User_Table) CreateUser(userTable *User_Table, res *string) error {
+	//fmt.Println("here")
+	//log.Log("info", mqtable.Name, nil)
+	err := CreateUsertoDB(userTable)
+	if err != nil {
+		*res = "User create failed!"
+	}else {
+		*res = userTable.Name + " create success."
+		log.Log("info", userTable.Name + " created.", nil)
+	}
+	return nil
+}
+
+func (lead *User_Table) DeleteUser(arr []int, res *string) error {
+	success := ""
+	for _, v := range arr {
+		err := DeleteUserById(v)
+		if err != nil {
+			*res = "Delete failed."
+			return err
+		}else {
+			success += strconv.Itoa(v) + " "
+			log.Log("info", strconv.Itoa(v) + " delete.", nil)
+			DeleteMqByUserId(v)
+		}
+	}
+	*res = success + "delete success."
+	return nil
+}
   
 type User_Table struct {
 	Id int

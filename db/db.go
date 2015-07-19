@@ -6,9 +6,11 @@ import (
 
 	"github.com/jin06/Caesar/log"
 	. "github.com/jin06/Caesar/msgqueue"
+	"github.com/jin06/Caesar/message"
 	"github.com/tsuru/config"
 	//"fmt"
 	"errors" 
+	//"time"
 )
 
 var (
@@ -125,6 +127,33 @@ func CreateMqtoDB(mqTable *Mq_Table) error {
 	handleErr(err)
 	return nil
 }
+
+func CreateUsertoDB(userTable *User_Table) error {
+	err1 := DB.Connect()
+	defer DB.Close()
+	if err1 != nil {
+		log.Log("err", err1.Error(), nil)
+		return err1
+	}
+	stmt, err := DB.Prepare("insert into user values (?, ?, ?, ?, ?, ?,?,?)")
+	handleErr(err)
+	if err != nil {
+		log.Log("err", err.Error(), nil)
+		return err
+	}
+	stmt.Bind(userTable)
+	if err != nil {
+		log.Log("err", err.Error(), nil)
+		return err
+	}
+	//err = getData(msgq) 
+	stmt.Bind(userTable.Id, userTable.Group_id, userTable.Name, userTable.Password, userTable.Register_time,userTable.Sign, userTable.Last_login_time, userTable.Other)
+	log.Log("info", string(userTable.Id), nil)
+	_, err = stmt.Run() //msgq.MQid, msgq.MQname, msgq.MQType, msgq.Owner, msgq.Persistence
+	handleErr(err)
+	return nil
+}
+
 func DeleteMqById(mqid int) error {
 	_, err := GetMqDataById(mqid)
 	if err != nil {
@@ -151,6 +180,50 @@ func DeleteMqById(mqid int) error {
 	}
 //	num := res.AffectedRows()    
 //	fmt.Println(num)  
+	return nil
+}
+
+func DeleteUserById(userId int) error {
+	
+	err1 := DB.Connect()
+	defer DB.Close()
+	if err1 != nil {
+		log.Log("err", err1.Error(), nil)
+		return err1
+	}
+	stmt, err := DB.Prepare(`delete from user where user_id=?`)
+	if err != nil {
+		log.Log("err", err.Error(), nil)
+		return err
+	}
+	//stmt.Bind(mqid)
+	//_, _, err = stmt.Exec(mqid)
+	_, _, err = stmt.Exec(userId)  
+	if err != nil {
+		log.Log("err", err.Error(), nil)
+		return err   
+	}
+	
+	return nil
+}
+
+func DeleteMqByUserId(userId int) error {
+	err := DB.Connect()
+	defer DB.Close()
+	if err != nil {
+		log.Log("err", err.Error(), nil)
+		return err
+	}
+	stmt, err := DB.Prepare(`delete from msgqueue where user_id=?`)
+	if err != nil {
+		log.Log("err", err.Error(), nil)
+		return err
+	}
+	_, _, err = stmt.Exec(userId)  
+	if err != nil {
+		log.Log("err", err.Error(), nil)
+		return err   
+	}
 	return nil
 }
 
@@ -188,6 +261,27 @@ func GetAllMqFromDB(mqOwner string) ([]*MsQueue, error) {
 	}
 }
 
+func GetAllUsersFromDB() ([]*User_Table, error) {
+	err := DB.Connect()
+	usersArr := make([]*User_Table, 20, 40)
+	defer DB.Close()
+	handleErr(err)
+	rows, _, err := DB.Query("select * from user")
+	
+	if l := len(rows); l == 0 {
+		return nil, errors.New("No user.")
+	}else {
+		//return NewMsgQue(id int,name string, mqType int, owner string, per bool), nil
+		for k,row := range rows {
+				usersArr[k] = &User_Table{
+					Id:row.Int(0),
+					Name:row.Str(2),
+					}
+		}
+		return usersArr, nil
+	}
+}
+
 func GetMqDataById(mqid int) (*MsQueue, error) {
 	err := DB.Connect()
 	defer DB.Close()
@@ -203,4 +297,69 @@ func GetMqDataById(mqid int) (*MsQueue, error) {
 	}
 }
 
+func CreateMsgtoDB(msg *message.Message) error {
+	err1 := DB.Connect()
+	defer DB.Close()
+	if err1 != nil {
+		log.Log("err", err1.Error(), nil)
+		return err1
+	}
+	stmt, err := DB.Prepare("insert into message values (?, ?, ?, ?, ?,?,?,?,?)")
+	handleErr(err)
+	if err != nil {
+		log.Log("err", err.Error(), nil)
+		return err
+	}
+	//stmt.Bind(mqTable)
+	if err != nil {
+		log.Log("err", err.Error(), nil)
+		return err
+	}
+	//err = getData(msgq) 
+	stmt.Bind(msg.MsgId, msg.Value, msg.CreatedTime, msg.Generator, msg.EXP, msg.MsgType, msg.SubNum, msg.MQid, nil)
+	_, err = stmt.Run() //msgq.MQid, msgq.MQname, msgq.MQType, msgq.Owner, msgq.Persistence
+	handleErr(err)
+	return nil
+}
+
+
+func GetMsgFlag(msgId int) (int, error) {
+	err := DB.Connect()
+	defer DB.Close()
+	handleErr(err)
+	rows, _, err := DB.Query("select * from message where message_id='%d'", msgId)
+	
+	if l := len(rows); l == 0 {
+		return 0, errors.New("message not exist.")
+	}else {
+		//return NewMsgQue(id int,name string, mqType int, owner string, per bool), nil
+		flag := rows[0].Int(8)
+		return flag, nil
+	}
+}
+
+func GetMsgByFlag(flag int) (*message.Message, error) {
+	err := DB.Connect()
+	defer DB.Close()
+	handleErr(err)
+	rows, _, err := DB.Query("select * from message where flag='%d'", flag)
+	
+	if l := len(rows); l == 0 {
+		return nil, errors.New("message not exist.")
+	}else {
+		//return NewMsgQue(id int,name string, mqType int, owner string, per bool), nil
+		msg := message.Message{
+			MsgId:rows[0].Int(0),
+			Value:rows[0].Str(1), 
+			//CreatedTime:rows[0].Time(2,t), 
+			Generator:rows[0].Str(3) ,
+			//EXP:time.Hour ,
+			MsgType:rows[0].Str(5),
+			SubNum:rows[0].Int(6),
+			MQid:rows[0].Int(7),
+		}
+		log.Log("info", "msg",nil)
+		return &msg, nil
+	}
+}
 

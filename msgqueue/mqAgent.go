@@ -115,9 +115,9 @@ func (mqagent MqAgent)TestMq(w rest.ResponseWriter, r *rest.Request){
 	}
 	_, ok := mqagent[mqid]
 	if ok {
-		w.WriteJson(map[string]string{"Result": ""})
+		w.WriteJson(map[string]string{"1020": "mq is running"})
 	}else {
-		w.WriteJson(map[string]string{"Result": "not running"})
+		w.WriteJson(map[string]string{"1010": "mq not running"})
 	}
 	
 }

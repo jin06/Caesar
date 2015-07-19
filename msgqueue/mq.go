@@ -55,6 +55,6 @@ func (mq *MsQueue) PopMsg() *message.Message{
 	}
 	msg := mq.List.Remove(e).(message.Message)
 	return &msg
-}               
+}      
 
 

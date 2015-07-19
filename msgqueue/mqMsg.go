@@ -38,9 +38,10 @@ func (mqmsg MqMsg)PostMsg(w rest.ResponseWriter, r *rest.Request) {
 		mq.Lock()
 		mq.AddMsg(*mqmsg.Msg)
 		mq.Unlock()
-		w.WriteJson(mqmsg.Msg)
+		//w.WriteJson(mqmsg.Msg)
+		w.WriteJson(map[string]string{"1016": "post success"})
 	}else {
-		w.WriteJson(map[string]string{"Result": "mq not running"})
+		w.WriteJson(map[string]string{"1010": "mq not running"})
 	}
 }
 
@@ -57,11 +58,12 @@ func (mqmsg MqMsg)GetMsg(w rest.ResponseWriter, r *rest.Request) {
 		msg := mq.PopMsg()
 		mq.Unlock()
 		if msg == nil {
-			w.WriteJson(map[string]string{"Result": "no message in mq"})
+			w.WriteJson(map[string]string{"1015": "no message in mq"})
 		}else {
+			//w.WriteJson(map[string]string{"1016": "post success"})
 			w.WriteJson(msg)
 		}
 	}else {
-		w.WriteJson(map[string]string{"Result": "mq not running"})
+		w.WriteJson(map[string]string{"1010": "mq not running"})
 	}
 }

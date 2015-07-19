@@ -112,6 +112,19 @@ func disCmd(cmd string) bool {
 			fmt.Printf(simRes.Res)
 		}
 		return true	
+	case "users":
+		if Me.Name != "admin" {
+			log.Log("err", "You are not administrator, no right!", nil)
+			return true
+		} 
+		var simRes object.SimResult
+		rpcClient.Call("Users.Users", Me, &simRes)
+		if simRes.LogInfo != "" {
+			fmt.Print(simRes.LogInfo)
+		}else {
+			fmt.Printf(simRes.Res)
+		}
+		return true	
 	case "newqueue":
 		fmt.Println("Please input name:")
 		return true

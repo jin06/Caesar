@@ -117,6 +117,37 @@ func (users *Users) MyMQ (user *User, simres *SimResult) error {
 	return nil
 }
 
+func (users *Users) Users (user *User, simres *SimResult) error {
+	simres.LogInfo = ""
+	//simres.Res = "You don't have queue."
+	if users.isLogined(user) {
+		if user.Key != users.UM[user.Name].Key{
+			simres.LogInfo = "User has already login!!! You are not login."
+			simres.Res = ""
+		}else {
+			usersRes, err := db.GetAllUsersFromDB()
+			if err != nil {
+				return err
+			}else {
+				i := 0
+				//status := "Users :"
+				for _, user := range usersRes {
+					if user == nil {break}
+					simres.Res += "ID: " + strconv.Itoa(user.Id) + "  NAME: " + user.Name +" \n"
+					i++
+				}
+				simres.Res += "Users num is :" + strconv.Itoa(i) + "\n"
+				
+				//simres.Res = simres.Res + "\n"
+			}
+		}
+	}else {
+		simres.LogInfo = "You are offline, please login."
+		simres.Res = ""
+	}
+	return nil
+}
+
 func (users *Users) LogOff (user *User, res *string) error {
 	if users.isLogined(user) && user.Key == users.UM[user.Name].Key{
 			*res = ""

@@ -21,6 +21,7 @@ var (
 	 onlineUsers = object.NewUsers()  
 	 mqAgentStat = new(MqAgentStat)
 	 mqTable = new(db.Mq_Table) 
+	 userTable = new(db.User_Table)
 )
 
 //publice DefaultServer's methods
@@ -29,6 +30,7 @@ func Register() {
 	DefaultServer.Register(onlineUsers)  
 	DefaultServer.Register(mqAgentStat)  
 	DefaultServer.Register(mqTable)
+	DefaultServer.Register(userTable)
 }
 
 //init the defaultServer, publice receiver's method and accept the listener from client.

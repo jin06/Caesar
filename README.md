@@ -124,7 +124,7 @@ Caesar是用go语言开发的消息队列。
   
   > - 使用users命令查看所有用户
   
-![Alt text](/image/usercurd.png)
+![Alt text](/image/usercrud.png)
 
 #####2、队列操作
 

@@ -205,6 +205,6 @@ Caesar是用go语言开发的消息队列。
   
       使用该项目简化了restful api接口的编写
       
-  > - github.com/jin06/Caesar/control
+  > - github.com/tsuru/config
   
       使用该项目对配置文件进行读取操作

@@ -66,7 +66,7 @@ Caesar是用go语言开发的消息队列。
     
 ###4、Caesar客户端的配置文件 Caesar/client/config/cient.yaml
 
-                 serveraddress: 127.0.0.1:1212    //连接服务端地址 2中对呀嗯的 server.yaml  rpcAddress
+                 serveraddress: 127.0.0.1:1212    //连接服务端地址 对应2中的配置文件server.yaml的rpcAddress
                  localaddress: 127.0.0.1:2213     //客户端启动端口
                  
 ###5、CaesarServer启动参数说明
